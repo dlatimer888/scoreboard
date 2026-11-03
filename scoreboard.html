@@ -48,6 +48,7 @@
     }
     .player .name { flex: 1; font-size: 18px; }
     .player .score { font-size: 24px; font-weight: bold; min-width: 40px; text-align: center; }
+    .player.leader { border: 3px solid #f59f00; background: #eecd39; }
   </style>
 </head>
 <body>
@@ -88,9 +89,20 @@
     function render() {
       playerList.innerHTML = ""; // clear what's there
 
+      // Find the top score to highlight the Leader
+      const topScore = Math.max(...players.map(p => p.score));
+      console.log(topScore);
+
+
       players.forEach(function (player, index) {
         const row = document.createElement("div");
-        row.className = "player";
+        row.className = "player"; 
+
+        // if this player has the top score, add the "leader" class
+        if (player.score === topScore && topScore > 0) {
+            row.className += " leader"; 
+        }
+        
         row.innerHTML = `
           <span class="name">${player.name}</span>
           <button class="minus" onclick="changeScore(${index}, -5)">−</button>
@@ -112,7 +124,7 @@
       render();
     }
 
-    // Change one player's score by some amount (+1 or -1).
+    // Change one player's score by some amount (+5 or -5).
     function changeScore(index, amount) {
       players[index].score += amount;
       render();
@@ -129,10 +141,6 @@
       players.splice(index, 1);
       render();
     }
-
-    //Hightlight lead player
-
-
 
     
 
