@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scoreboard</title>
+
+  <!--
+    PART 1: CSS (how things LOOK)
+    CSS picks elements and styles them. "body" styles the whole page,
+    ".player" styles anything with class="player", and so on.
+  -->
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 480px;
+      margin: 40px auto;
+      padding: 0 16px;
+      background: #f4f4f7;
+      color: #222;
+    }
+    h1 { text-align: center; }
+
+    .add-row { display: flex; gap: 8px; margin-bottom: 20px; }
+    .add-row input { flex: 1; padding: 10px; font-size: 16px; }
+
+    button {
+      padding: 10px 14px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #351dd1;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover { opacity: 0.85; }
+    button.minus { background: #979b9f; }
+    button.reset { background: #e03131; width: 100%; margin-top: 20px; }
+
+    .player {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .player .name { flex: 1; font-size: 18px; }
+    .player .score { font-size: 24px; font-weight: bold; min-width: 40px; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!--
+    PART 2: HTML (what's ON the page)
+    HTML is the structure: headings, text boxes, buttons.
+    The "id" attributes are labels so JavaScript can find these elements.
+  -->
+  <h1>Scoreboard</h1>
+
+  <div class="add-row">
+    <input id="nameInput" placeholder="Player name">
+    <button id="addButton">Add player</button>
+  </div>
+
+  <div id="playerList"></div>
+
+  <button class="reset" id="resetButton">Reset all scores</button>
+
+  <!--
+    PART 3: JavaScript (what things DO)
+    This is the logic. The key idea: we keep the DATA in a variable
+    ("players"), and every time it changes we redraw the screen from it.
+    React, which you'll learn in week 2, is built on this exact idea.
+  -->
+  <script>
+    // The app's data. An array (list) of objects, each with a name and score.
+    let players = [];
+
+    // Grab the elements we labeled with ids in the HTML.
+    const nameInput = document.getElementById("nameInput");
+    const addButton = document.getElementById("addButton");
+    const playerList = document.getElementById("playerList");
+    const resetButton = document.getElementById("resetButton");
+
+    // Redraw the player list from the data.
+    function render() {
+      playerList.innerHTML = ""; // clear what's there
+
+      players.forEach(function (player, index) {
+        const row = document.createElement("div");
+        row.className = "player";
+        row.innerHTML = `
+          <span class="name">${player.name}</span>
+          <button class="minus" onclick="changeScore(${index}, -5)">−</button>
+          <span class="score">${player.score}</span>
+          <button onclick="changeScore(${index}, 5)">+</button>
+          <button onclick="deletePlayer(${index})">Delete</button>
+        `;
+        playerList.appendChild(row);
+      });
+    }
+
+    // Add a new player from the text box.
+    function addPlayer() {
+      const name = nameInput.value.trim();
+      if (name === "") return; // ignore empty names
+
+      players.push({ name: name, score: 0 });
+      nameInput.value = "";
+      render();
+    }
+
+    // Change one player's score by some amount (+1 or -1).
+    function changeScore(index, amount) {
+      players[index].score += amount;
+      render();
+    }
+
+    // Set everyone back to zero.
+    function resetScores() {
+      players.forEach(function (player) { player.score = 0; });
+      render();
+    }
+
+    //Delete player
+    function deletePlayer(index) {
+      players.splice(index, 1);
+      render();
+    }
+
+    //Hightlight lead player
+
+
+
+    
+
+
+    // "Event listeners": run a function when the user does something.
+    addButton.addEventListener("click", addPlayer);
+    resetButton.addEventListener("click", resetScores);
+    nameInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") addPlayer();
+    });
+    deleteButton.addEventListener("click", deletePlayer);
+
+    render();
+  </script>
+</body>
+</html>
